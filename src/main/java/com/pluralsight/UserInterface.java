@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class UserInterface {
     private Dealership dealership;
-    static final Scanner scanner = new Scanner(System.in);
+    static Scanner scanner = new Scanner(System.in);
 
     public UserInterface() {
     }

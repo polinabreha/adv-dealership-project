@@ -1,3 +1,6 @@
 SALE|20210928|Fred Wyatt|fred@texas.com|10112|1993|Ford|Explorer|SUV|Red|525123|995.00|49.75|100.00|295.00|1439.75|NO|0.00
 LEASE|20210928|Charles Westly|Charles@texas.com|37846|2021|Chevrolet|Silverado|truck|Black|2750|31995.00|15997.50|2239.65|18237.15|540.72
 SALE|05/09/2026|Polina|polina@gmail.com|37846|2001|Ford|Ranger|truck|Yellow|172544|1995.0|99.75|100.0|295.0|2489.75|false|0.0
+LEASE|05/15/2026|Ron|ronny@gmail.com|5670|2026|toyota|highlander|suv|navy|10000|78000.0|39000.0|5460.001|122460.0|3615.507
+
+SALE|2026-05-15|Polina|test@test.com|12345|2024|Toyota|Camry|Sedan|Blue|10000|25000.0|1250.0|100.0|495.0|26845.0|true|609.1425322023673
