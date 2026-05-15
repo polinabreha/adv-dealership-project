@@ -52,11 +52,23 @@ public class SalesContract extends Contract {
 
     @Override
     public double getTotalPrice() {
-        return 0;
+        return vehicle.getPrice() + salesTaxAmount + recordingFee + processingFee;
     }
 
     @Override
     public double getMonthlyPayment() {
-        return 0;
+        if (!isFinanced) return 0;
+
+        double monthlyRate;
+        int months;
+
+        if (vehicle.getPrice() >= 10000) {
+            monthlyRate = 0.0425 / 12;
+            months = 48;
+        } else {
+            monthlyRate = 0.0525 / 12;
+            months = 24;
+        }
+        return (getTotalPrice() * monthlyRate) / (1-Math.pow(1 + monthlyRate, - months) );
     }
 }
