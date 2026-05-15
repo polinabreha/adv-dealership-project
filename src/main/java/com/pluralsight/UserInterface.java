@@ -39,6 +39,7 @@ public class UserInterface {
                     "7 - List ALL vehicles\n" +
                     "8 - Add a vehicle\n" +
                     "9 - Remove a vehicle\n" +
+                    "10 - Sell/Lease car\n"+
                     "99 - Quit");
             System.out.print("Enter your choice: " + Design.RESET);
             int choice = scanner.nextInt();
@@ -71,6 +72,9 @@ public class UserInterface {
                 case 9:
                     processRemoveVehicleRequest();
                     break;
+                case 10:
+                    processSellLeaseVehicleRequest();
+                    break;
                 case 99:
                     exit = false;
                     end();
@@ -80,6 +84,77 @@ public class UserInterface {
             }
 
         }
+
+    }
+
+    public void processSellLeaseVehicleRequest(){
+        System.out.print(Design.PURPLE +"Please enter the vin of the car: " + Design.RESET);
+        String vin = scanner.nextLine();
+        Vehicle foundVehicle = null;
+        for (Vehicle vehicle : dealership.getAllVehicles()) {
+            if (vehicle.getVin() == Integer.parseInt(vin)) {
+                foundVehicle = vehicle;
+                break;
+            }
+        }
+        if (foundVehicle == null) {
+            System.out.println("Vehicle not found!");
+            return;
+        }
+        System.out.print(Design.PURPLE +"Please your name :  " + Design.RESET);
+        String name = scanner.nextLine();
+        System.out.print(Design.PURPLE +"Please enter your email: " + Design.RESET);
+        String email = scanner.nextLine();
+        System.out.print(Design.PURPLE +"Please enter the date: " + Design.RESET);
+        String date = scanner.nextLine();
+        System.out.print(Design.PURPLE +"Is it for sale or lease?(enter S/L) " + Design.RESET);
+        String choice = scanner.nextLine();
+       if  (choice.equalsIgnoreCase("S")) {
+           System.out.print(Design.PURPLE +"Do you need finance?(yes/no) " + Design.RESET);
+           String choice2 = scanner.nextLine();
+           if (choice2.equalsIgnoreCase("yes")) {
+               SalesContract sc = new SalesContract(date, name, email, foundVehicle, true);
+               ContractFileManager cfm = new ContractFileManager();
+               cfm.saveContract(sc);
+               System.out.println("Sale contract created successfully! Vehicle has been sold.");
+               dealership.removeVehicle(foundVehicle);
+               try {
+                   DealershipFileManager dfm = new DealershipFileManager();
+                   dfm.saveDealership(dealership);
+               } catch (IOException e) {
+                   System.out.println("Error saving dealership" + e.getMessage());
+               }
+           }else{
+               SalesContract sc = new SalesContract(date, name, email, foundVehicle, false);
+               ContractFileManager cfm = new ContractFileManager();
+               cfm.saveContract(sc);
+               System.out.println("Sale contract created successfully! Vehicle has been sold.");
+               dealership.removeVehicle(foundVehicle);
+               try {
+                   DealershipFileManager dfm = new DealershipFileManager();
+                   dfm.saveDealership(dealership);
+               } catch (IOException e) {
+                   System.out.println("Error saving dealership" + e.getMessage());
+               }
+           }
+
+       }else if  (choice.equalsIgnoreCase("L")) {
+           if (2026 - foundVehicle.getYear() > 3) {
+               System.out.println("Sorry, cannot lease a vehicle over 3 years old!");
+               return;
+           }
+           LeaseContract lc = new LeaseContract(date, name, email, foundVehicle);
+           ContractFileManager cfm = new ContractFileManager();
+           cfm.saveContract(lc);
+           System.out.println("Lease contract created successfully! Vehicle has been leased.");
+           dealership.removeVehicle(foundVehicle);
+           try {
+               DealershipFileManager dfm = new DealershipFileManager();
+               dfm.saveDealership(dealership);
+           } catch (IOException e) {
+               System.out.println("Error saving dealership" + e.getMessage());
+           }
+       }
 
     }
 
