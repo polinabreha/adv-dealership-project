@@ -1,5 +1,6 @@
 package com.pluralsight;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -87,12 +88,28 @@ public class UserInterface {
 
     }
 
+    private void saveDealershipData() {
+        try {
+            DealershipFileManager dfm = new DealershipFileManager();
+            dfm.saveDealership(dealership);
+        } catch (IOException e) {
+            System.out.println("Error saving dealership " + e.getMessage());
+        }
+    }
+
     public void processSellLeaseVehicleRequest(){
         System.out.print(Design.PURPLE +"Please enter the vin of the car: " + Design.RESET);
-        String vin = scanner.nextLine();
+        String vinInput = scanner.nextLine();
+        int vin;
+        try {
+            vin = Integer.parseInt(String.valueOf(vinInput));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid VIN!");
+            return;
+        }
         Vehicle foundVehicle = null;
         for (Vehicle vehicle : dealership.getAllVehicles()) {
-            if (vehicle.getVin() == Integer.parseInt(vin)) {
+            if (vehicle.getVin() == vin) {
                 foundVehicle = vehicle;
                 break;
             }
@@ -118,28 +135,18 @@ public class UserInterface {
                cfm.saveContract(sc);
                System.out.println("Sale contract created successfully! Vehicle has been sold.");
                dealership.removeVehicle(foundVehicle);
-               try {
-                   DealershipFileManager dfm = new DealershipFileManager();
-                   dfm.saveDealership(dealership);
-               } catch (IOException e) {
-                   System.out.println("Error saving dealership" + e.getMessage());
-               }
+               saveDealershipData();
            }else{
                SalesContract sc = new SalesContract(date, name, email, foundVehicle, false);
                ContractFileManager cfm = new ContractFileManager();
                cfm.saveContract(sc);
                System.out.println("Sale contract created successfully! Vehicle has been sold.");
                dealership.removeVehicle(foundVehicle);
-               try {
-                   DealershipFileManager dfm = new DealershipFileManager();
-                   dfm.saveDealership(dealership);
-               } catch (IOException e) {
-                   System.out.println("Error saving dealership" + e.getMessage());
-               }
+               saveDealershipData();
            }
 
        }else if  (choice.equalsIgnoreCase("L")) {
-           if (2026 - foundVehicle.getYear() > 3) {
+           if (LocalDate.now().getYear() - foundVehicle.getYear() > 3) {
                System.out.println("Sorry, cannot lease a vehicle over 3 years old!");
                return;
            }
@@ -148,12 +155,7 @@ public class UserInterface {
            cfm.saveContract(lc);
            System.out.println("Lease contract created successfully! Vehicle has been leased.");
            dealership.removeVehicle(foundVehicle);
-           try {
-               DealershipFileManager dfm = new DealershipFileManager();
-               dfm.saveDealership(dealership);
-           } catch (IOException e) {
-               System.out.println("Error saving dealership" + e.getMessage());
-           }
+           saveDealershipData();
        }
 
     }
