@@ -1,4 +1,7 @@
 package com.pluralsight;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -86,6 +89,43 @@ public class UserInterface {
 
         }
 
+    }
+
+    public void admin() throws IOException {
+        System.out.println("Enter the password : ");
+        String password = scanner.nextLine();
+        if (password.equals("11111once")){
+            FileReader fileReader = new FileReader("src/main/resources/contracts.csv");
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
+            ArrayList<Contract> contracts = new ArrayList<>();
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] cells = line.split("\\|");
+                Vehicle vehicle = new Vehicle(
+                        Integer.parseInt(cells[4]),   // vin
+                        Integer.parseInt(cells[5]),   // year
+                        cells[6],                     // make
+                        cells[7],                     // model
+                        cells[8],                     // type
+                        cells[9],                     // color
+                        Integer.parseInt(cells[10]),  // odometer
+                        Double.parseDouble(cells[11]) // price
+                );
+                if (cells[0].equals("SALE")) {
+                    boolean isFinanced = Boolean.parseBoolean(cells[16]);
+                    SalesContract sc = new SalesContract(cells[1], cells[2], cells[3], vehicle, isFinanced);
+                    contracts.add(sc);
+                } else if (cells[0].equals("LEASE")) {
+                    LeaseContract lc = new LeaseContract(cells[1], cells[2], cells[3], vehicle);
+                    contracts.add(lc);
+                }
+            }
+
+
+        }else{
+            System.out.println("Wrong password");
+            return;
+        }
     }
 
     private void saveDealershipData() {
